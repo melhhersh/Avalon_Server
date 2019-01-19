@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "colyseus": "^0.9.26",
     "express": "^4.16.4",
     "nodemon": "^1.18.9",
     "socket.io": "^2.2.0"
