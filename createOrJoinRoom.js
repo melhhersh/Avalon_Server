@@ -3,11 +3,10 @@ const colyseus = require ('colyseus')
 class CreateOrJoinRoom extends colyseus.Room{
     constructor(){
         super()
-        this.maxClients = 10;
     }   
 
-
     onInit (options) {
+        this.maxClients = options.players;
         this.setState({
             players:[options.name],
             numPlayers: options.players,
