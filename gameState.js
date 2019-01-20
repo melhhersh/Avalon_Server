@@ -43,27 +43,27 @@ const gameState = {
     },
     5:{
         characters: ['merlin', 'lSA1', 'lSA2', 'assassin','mOm1'],
-        q1:{
+        1:{
             voters: 2,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 2,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q5:{
+        5:{
             voters: 3,
             status: '',
             votesToFail: 1,
@@ -71,27 +71,27 @@ const gameState = {
     },
     6:{
         characters: ['merlin', 'lSA1', 'lSA2', 'lSA3','assassin','mordred'],
-        q1:{
+        1:{
             voters: 2,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q5:{
+        5:{
             voters: 4,
             status: '',
             votesToFail: 1,
@@ -99,27 +99,27 @@ const gameState = {
     },
     7:{
         characters: ['merlin', 'lSA1', 'lSA2', 'percival','assassin','mordred', 'moregana'],
-        q1:{
+        1:{
             voters: 2,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 4,
             status: '',
             votesToFail: 2,
         },
-        q5:{
+        5:{
             voters: 4,
             status: '',
             votesToFail: 1,
@@ -127,27 +127,27 @@ const gameState = {
     },
     8:{
         characters: ['merlin', 'lSA1', 'lSA2', 'lSA3','percival','assassin','mordred', 'moregana'],
-        q1:{
+        1:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 5,
             status: '',
             votesToFail: 2,
         },
-        q5:{
+        5:{
             voters: 5,
             status: '',
             votesToFail: 1,
@@ -155,27 +155,27 @@ const gameState = {
     },
     9:{
         characters: ['merlin', 'lSA1', 'lSA2', 'lSA3', 'lSA4','percival','assassin','mordred', 'moregana'],
-        q1:{
+        1:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 5,
             status: '',
             votesToFail: 2,
         },
-        q5:{
+        5:{
             voters: 5,
             status: '',
             votesToFail: 1,
@@ -183,27 +183,27 @@ const gameState = {
     },
     10:{
         characters: ['merlin', 'lSA1', 'lSA2', 'lSA3', 'lSA4','percival','assassin','mordred', 'moregana', 'oberon'],
-        q1:{
+        1:{
             voters: 3,
             status: '',
             votesToFail: 1,
         },
-        q2:{
+        2:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q3:{
+        3:{
             voters: 4,
             status: '',
             votesToFail: 1,
         },
-        q4:{
+        4:{
             voters: 5,
             status: '',
             votesToFail: 2,
         },
-        q5:{
+        5:{
             voters: 5,
             status: '',
             votesToFail: 1,
