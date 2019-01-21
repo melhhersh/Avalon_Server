@@ -16,6 +16,10 @@ const gameState = {
             "team": "good",
             "image": ""
         },
+        lSA4:{
+            "team": "good",
+            "image": ""
+        },
         merlin:{
             "team": "good",
             "image": ""
@@ -70,7 +74,7 @@ const gameState = {
         }
     },
     6:{
-        characters: ['merlin', 'lSA1', 'lSA2', 'lSA3','assassin','mordred'],
+        characters: ['merlin', 'lSA2', 'lSA3','assassin', 'lSA1', 'mordred'],
         1:{
             voters: 2,
             status: '',
@@ -98,7 +102,7 @@ const gameState = {
         }
     },
     7:{
-        characters: ['merlin', 'lSA1', 'lSA2', 'percival','assassin','mordred', 'moregana'],
+        characters: ['lSA1','mordred', 'lSA2', 'percival','assassin','merlin','mordred', 'moregana'],
         1:{
             voters: 2,
             status: '',
@@ -126,7 +130,7 @@ const gameState = {
         }
     },
     8:{
-        characters: ['merlin', 'lSA1', 'lSA2', 'lSA3','percival','assassin','mordred', 'moregana'],
+        characters: ['mordred','merlin', 'lSA1', 'lSA2', 'lSA3','percival','assassin','mordred','lSA1', 'lSA2', 'moregana'],
         1:{
             voters: 3,
             status: '',
@@ -154,7 +158,7 @@ const gameState = {
         }
     },
     9:{
-        characters: ['merlin', 'lSA1', 'lSA2', 'lSA3', 'lSA4','percival','assassin','mordred', 'moregana'],
+        characters: ['assassin','lSA3', 'lSA4','percival','mordred', 'moregana','merlin', 'lSA1', 'lSA2'],
         1:{
             voters: 3,
             status: '',
@@ -182,7 +186,7 @@ const gameState = {
         }
     },
     10:{
-        characters: ['merlin', 'lSA1', 'lSA2', 'lSA3', 'lSA4','percival','assassin','mordred', 'moregana', 'oberon'],
+        characters: ['lSA1', 'oberon', 'lSA3', 'lSA4','assassin','mordred', 'percival', 'moregana','merlin'],
         1:{
             voters: 3,
             status: '',
@@ -210,3 +214,5 @@ const gameState = {
         }
     },
 }
+
+module.exports = gameState

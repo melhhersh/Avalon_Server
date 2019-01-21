@@ -1,23 +1,18 @@
-const colyseus = require ('colyseus') 
-const gameState = require ('./gameState')
 
-class CreateOrJoinRoom extends colyseus.Room{
+const gameState = require ('../gameState')
+
+class AvalonGame{
     constructor(){
-        super()
+
     }   
 
     onInit (options) {
-        this.maxClients = options.players;
-        this.setState({
-            gameState: gameState[options.players],
-            players:{
-                [options.sessionId]:{
-                        character: undefined,
-                        name: options.name
-                }
-            },
-            numPlayers: options.players,
-            name: options.roomName,
+        this.maxClients = options.numPlayers;
+        this.state = {
+            gameState: gameState[options.numPlayers],
+            players:{},
+            numPlayers: options.numPlayers,
+            roomName: options.roomName,
             current: {
                 quest: 1,
                 status: 'waiting',
@@ -41,24 +36,19 @@ class CreateOrJoinRoom extends colyseus.Room{
                     5:[]
                 }
             }
-        });
+        };
+        return this
     }
     
-    onJoin (client, options, auth) {
-        this.state.players[client.sessionId] = {
+    onJoin (sessionID, name) {
+        this.state.players[sessionID] = {
             character: undefined,
-            name: options.name
+            name
         }
         if(Object.keys(this.state.players).length === this.maxClients){
             this.assignCharacters()
             this.state.current.status = "track"
         }
-    }
-    
-    requestJoin (options, isNewRoom) {
-        return (options.create)
-            ? (options.create && isNewRoom)
-            : this.clients.length > 0;
     }
     
     onMessage (client, vote) {
@@ -113,21 +103,6 @@ class CreateOrJoinRoom extends colyseus.Room{
     onLeave (client) {
         console.log("ChatRoom:", client.sessionId, "left!");
     }
-
-    assignCharacters(){
-        let copy = [...this.state.gameState.characters]
-        let playerIds = Object.keys(this.state.players)
-
-        for(let i = 0; i < this.state.gameState.characters.length; i++){
-           let index = Math.floor(Math.random() * copy.length)
-           let char = copy.splice(index, 1)
-           let gameChar = gameState.characters[char]
-           let playerId = playerIds[i]
-
-           this.state.players[playerId].character = gameChar
-        }
-    }
-    
     trackVoteCounter(arr){
         let results = arr.reduce((accum, elem)=>{
             if(elem.vote){
@@ -169,4 +144,4 @@ class CreateOrJoinRoom extends colyseus.Room{
 }
 
 
-module.exports = {CreateOrJoinRoom}
+module.exports = AvalonGame
