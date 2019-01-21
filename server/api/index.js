@@ -17,7 +17,8 @@ router.post('/create', async (req, res, next) => {
       })
       res.status(200).send('New Game Created!')
     } catch (err) {
-      next(err)
+      console.log(err);
+      res.sendStatus(401);
     }
   })
 
@@ -60,6 +61,7 @@ router.post('/create', async (req, res, next) => {
 
 router.post('/vote', async (req, res, next) => {
   try{
+    console.log(req.body);
     let game = await State.findOne({
       where:{
         id: req.body.id
@@ -79,25 +81,32 @@ router.post('/vote', async (req, res, next) => {
       await Track.update({[game.trackVote]:value},{
         where:{stateId: game.id}
       })
-      if(value.length === game.maxClients){
-        let results = trackVoteCounter(value)
-        if(results === "fail"){
-          if(game.trackVote === 5){
-            await State.update({status: 'end'}, {
+
+      console.log(value.length, game.numPlayers);
+        if(value.length === game.numPlayers){
+          let results = trackVoteCounter(value)
+          if(results === "fail"){
+            if(game.trackVote === 4){
+              await State.update({status: 'end'}, {
+                where:{id: req.body.id}}
+              )
+              return res.send(200);
+
+            }
+
+            let updatedTrackVote = game.trackVote + 1;
+            await State.update({trackVote: updatedTrackVote}, {
               where:{id: req.body.id}}
             )
-            return
+          } else {
+            await State.update({trackVote: 1, status: 'quest'}, {
+              where:{id: req.body.id}}
+            )
+            await Track.update({1:[], 2:[], 3:[], 4:[], 5:[]},{where:{stateId: game.id}})
           }
-          await State.update({trackVote: game.trackVote++}, {
-            where:{id: req.body.id}}
-          )
-        } else {
-          await State.update({trackVote: 1, status: 'quest'}, {
-            where:{id: req.body.id}}
-          )
-          await Track.update({1:[], 2:[], 3:[], 4:[], 5:[]},{where:{stateId: game.id}})
+          console.log("results", results)
+
         }
-      }
       } else {
       let gameQuest = await Quest.findOrCreate({
         where: {
@@ -112,33 +121,45 @@ router.post('/vote', async (req, res, next) => {
       await Quest.update({[game.questNum]:value},{
         where:{stateId: game.id}
       })
-      if (value.length === gameState[game.questNum].voters) {
-        let results = this.questVoteCounter(value, game.questNum)
+
+      if (value.length === gameState[game.numPlayers][game.questNum].voters) {
+        let results = questVoteCounter(value, game.numPlayers,
+          game.questNum)
+
+        console.log(results);  
         if(results === "fail"){
-          await State.update({totalFail: game.totalFail++}, {
+          let updatedFail = game.totalFail + 1;
+          await State.update({totalFail: updatedFail}, {
             where:{id: req.body.id}}
           )
-          if(game.totalFail === 3){
+          if(updatedFail === 3){
             await State.update({status: 'end'}, {
               where:{id: req.body.id}})
-            return
+            return res.send(200);
+
           }
         } else {
-          await State.update({totalSuccess: game.totalSuccess++}, {
+          let updatedSuccess = game.totalSuccess + 1;
+          console.log(updatedSuccess);
+          await State.update({ totalSuccess: updatedSuccess }, {
             where:{id: req.body.id}})
-            if(game.totalSuccess === 3){
+            if(updatedSuccess === 3){
               await State.update({status: 'end'}, {
                 where:{id: req.body.id}})
-              return
+                return res.send(200);
             }
         }
-        await State.update({questNum: game.questNum++, status: 'track'},{
+        let updatedQuestNum = game.questNum + 1;
+        await State.update({questNum: updatedQuestNum, status: 'track'},{
           where:{id: req.body.id}
         })
       }
     }
+
+    res.send(200);
   } catch(err){
-    next(err)
+    console.log(err);
+    res.sendStatus(401);
   }
 })
 
@@ -178,10 +199,10 @@ function trackVoteCounter(arr){
   }
 }
 
-function questVoteCounter(arr, questNum){
-  let questFailNum = gameState[questNum].votesToFail
+function questVoteCounter(arr, numPlayers, questNum){
+  let questFailNum = gameState[numPlayers][questNum].votesToFail
   let results = arr.reduce((accum, elem)=>{
-      if(elem.vote){
+      if(elem.includes('PASS')){
           accum.pass++;
       } else {
           accum.fail++;
@@ -191,6 +212,8 @@ function questVoteCounter(arr, questNum){
       pass: 0,
       fail: 0
   })
+
+
   if(results.fail >= questFailNum){
       return "fail";
   } else {
