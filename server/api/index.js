@@ -199,8 +199,6 @@ router.get('/state', async (req, res) => {
       stateId: player.dataValues.stateId
     }
   })
-
-  console.log(quests.dataValues);
   let mappedQuest = [];
   
   for (let i =1; i < 6; i++) {
@@ -210,6 +208,17 @@ router.get('/state', async (req, res) => {
 
   res.json({...state.dataValues, quests: mappedQuest});
 });
+
+router.get('/character', async(req, res)=>{
+  try{
+    let player = await Player.findOne({where:{
+      sessionID: req.sessionID
+    }})
+    res.json(player.dataValues)
+  } catch(err){
+    console.log(err)
+  }
+})
 
 function assignCharacters(players, characters){
   let copy = [...characters]
