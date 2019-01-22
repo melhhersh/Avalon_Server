@@ -1,8 +1,22 @@
 const router = require('express').Router();
 const {Player, Quest, State, Track} = require('../db/models')
-const session = require('express-session');
 const gameState = require('../../gameState')
+const socketStuff = require('../socket');
 module.exports = router;
+
+router.get('/state/:roomName', async (req, res) => {
+  try {
+    let state = await State.findOne({
+      where: {
+        roomName: req.params.roomName
+      }
+    })
+    res.json(state.dataValues);
+  } catch (err) {
+    console.log(err);
+    res.send('No state?', err)
+  }
+})
 
 router.post('/create', async (req, res, next) => {
     try {
@@ -15,6 +29,7 @@ router.post('/create', async (req, res, next) => {
           sessionID: req.sessionID,
           stateId: newGame.id
       })
+      // socketStuff.establishSocket(req.body.roomName);
       res.status(200).send('New Game Created!')
     } catch (err) {
       console.log(err);
@@ -29,7 +44,7 @@ router.post('/create', async (req, res, next) => {
           roomName: req.body.roomName
         }
       })
-      let newPlayer = await Player.create({
+      await Player.create({
           name: req.body.name,
           sessionID: req.sessionID,
           stateId: game.id
@@ -39,7 +54,9 @@ router.post('/create', async (req, res, next) => {
           stateId: game.id
         }
       })
-      if(players.length === game.numPlayers){
+
+
+      if (players.length === game.numPlayers) {
         let assignment = assignCharacters(players, gameState[game.numPlayers].characters);
         players.forEach(async function (player, index){
             await Player.update({
@@ -51,7 +68,12 @@ router.post('/create', async (req, res, next) => {
           })
         })
         await State.update({status: "track"},{where:{roomName: req.body.roomName}})
+
+        socketStuff.emitMessage(req.body.roomName, assignment); 
+
       }
+
+      // client should join socket room
       res.status(200).send('Joined Room!')
     } catch (err) {
       console.log(err)
@@ -82,49 +104,46 @@ router.post('/vote', async (req, res, next) => {
         where:{stateId: game.id}
       })
 
-      console.log(value.length, game.numPlayers);
-        if(value.length === game.numPlayers){
-          let results = trackVoteCounter(value)
-          if(results === "fail"){
-            if(game.trackVote === 4){
-              await State.update({status: 'end'}, {
-                where:{id: req.body.id}}
-              )
-              return res.send(200);
-
-            }
-
-            let updatedTrackVote = game.trackVote + 1;
-            await State.update({trackVote: updatedTrackVote}, {
+      if (value.length === game.numPlayers) {
+        let results = trackVoteCounter(value)
+        if(results === "fail"){
+          if(game.trackVote === 4){
+            await State.update({status: 'end'}, {
               where:{id: req.body.id}}
             )
-          } else {
-            await State.update({trackVote: 1, status: 'quest'}, {
-              where:{id: req.body.id}}
-            )
-            await Track.update({1:[], 2:[], 3:[], 4:[], 5:[]},{where:{stateId: game.id}})
+            return res.send(200);
+
           }
-          console.log("results", results)
 
+          let updatedTrackVote = game.trackVote + 1;
+          await State.update({trackVote: updatedTrackVote}, {
+            where:{id: req.body.id}}
+          )
+        } else {
+          await State.update({trackVote: 1, status: 'quest'}, {
+            where:{id: req.body.id}}
+          )
+          await Track.update({1:[], 2:[], 3:[], 4:[], 5:[]},{where:{stateId: game.id}})
+        }
         }
       } else {
-      let gameQuest = await Quest.findOrCreate({
-        where: {
-          stateId: game.id
+        let gameQuest = await Quest.findOrCreate({
+          where: {
+            stateId: game.id
+          }
+        })
+        let value = gameQuest[0].dataValues[game.questNum];
+        if (!value) {
+          value = []
         }
-      })
-      let value = gameQuest[0].dataValues[game.questNum];
-      if(!value){
-        value = []
-      }
-      value.push(`${req.body.vote}`)
-      await Quest.update({[game.questNum]:value},{
-        where:{stateId: game.id}
-      })
+        value.push(`${req.body.vote}`)
+        await Quest.update({[game.questNum]:value},{
+          where:{stateId: game.id}
+        })
 
-      if (value.length === gameState[game.numPlayers][game.questNum].voters) {
-        let results = questVoteCounter(value, game.numPlayers,
-          game.questNum)
+        if (value.length === gameState[game.numPlayers][game.questNum].voters) {
+          let results = questVoteCounter(value, game.numPlayers,
+            game.questNum)
 
         console.log(results);  
         if(results === "fail"){
@@ -162,6 +181,35 @@ router.post('/vote', async (req, res, next) => {
     res.sendStatus(401);
   }
 })
+
+router.get('/state', async (req, res) => {
+  let player = await Player.findOne({
+    where: {
+      sessionID: req.sessionID
+    }
+  });
+  let state = await State.findOne({
+    where:{
+      id: player.dataValues.stateId
+    }
+  })
+
+  let quests = await Quest.findOne({
+    where: {
+      stateId: player.dataValues.stateId
+    }
+  })
+
+  console.log(quests.dataValues);
+  let mappedQuest = [];
+  
+  for (let i =1; i < 6; i++) {
+    mappedQuest.push(questVoteCounter(quests.dataValues[String(i)], state.dataValues.numPlayers, i));
+  }
+
+
+  res.json({...state.dataValues, quests: mappedQuest});
+});
 
 function assignCharacters(players, characters){
   let copy = [...characters]
@@ -213,6 +261,9 @@ function questVoteCounter(arr, numPlayers, questNum){
       fail: 0
   })
 
+  if (results.fail === 0 && results.pass === 0) {
+    return '';
+  }
 
   if(results.fail >= questFailNum){
       return "fail";

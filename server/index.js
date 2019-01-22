@@ -6,12 +6,12 @@ const session = require('express-session');
 const app = express();
 const morgan = require('morgan');
 const createOrJoin = require('./avalonGame');
-const socketio = require('socket.io');
 const uuidv4 = require('uuid/v4');
 const compression = require('compression');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./db');
 const sessionStore = new SequelizeStore({db});
+const socketStuff = require('./socket');
 
 module.exports = app
 
@@ -57,24 +57,28 @@ const startListening = () => {
     const server = app.listen(PORT, () =>
       console.log(`Mixing it up on port ${PORT}`)
     )
-    // const io = socketio(server)
+    const io = socketio(server)
     // require('./socket')(io)
   }
 
-  async function bootApp() {
-    try{
-      await sessionStore.sync()
-      await syncDb()
-      await createApp()
-      await startListening()
-    } catch(err){
-      console.error(err)
-    }
-    
+async function bootApp() {
+  try{
+    await sessionStore.sync()
+    await syncDb()
+    await createApp()
+  } catch(err){
+    console.error(err)
   }
+  
+}
 
-  if (require.main === module) {
-    bootApp()
-  } else {
-    createApp()
-  }
+// if (require.main === module) {
+//   bootApp()
+// } else {
+//   createApp()
+// }
+bootApp();
+const server = app.listen(PORT, () =>
+console.log(`Mixing it up on port ${PORT}`)
+)
+socketStuff.establishSocket(server);

@@ -2,47 +2,47 @@ const gameState = {
     characters:{
         assassin:{
             "team": "evil",
-            "image": ""
+            "image": "assassin"
         },
         lSA1:{
             "team": "good",
-            "image": ""
+            "image": "LSA1"
         },
         lSA2:{
             "team": "good",
-            "image": ""
+            "image": "LSA2"
         },
         lSA3:{
             "team": "good",
-            "image": ""
+            "image": "LSA3"
         },
         lSA4:{
             "team": "good",
-            "image": ""
+            "image": "LSA4"
         },
         merlin:{
             "team": "good",
-            "image": ""
+            "image": "merlin"
         },
         mOM1:{
             "team": "evil",
-            "image": ""
+            "image": "mOM1"
         },
         mordred:{
             "team": "evil",
-            "image": ""
+            "image": "mordred"
         },
-        moregana:{
+        morgana:{
             "team": "evil",
-            "image": ""
+            "image": "morgana"
         },
         oberon:{
             "team": "evil",
-            "image": ""
+            "image": "oberon"
         },
         percival:{
             "team": "good",
-            "image": ""
+            "image": "percival"
         }
     },
     5:{
@@ -102,7 +102,7 @@ const gameState = {
         }
     },
     7:{
-        characters: ['lSA1','mordred', 'lSA2', 'percival','assassin','merlin','mordred', 'moregana'],
+        characters: ['lSA1','mordred', 'lSA2', 'percival','assassin','merlin','mordred', 'morgana'],
         1:{
             voters: 2,
             status: '',
@@ -130,7 +130,7 @@ const gameState = {
         }
     },
     8:{
-        characters: ['mordred','merlin', 'lSA1', 'lSA2', 'lSA3','percival','assassin','mordred','lSA1', 'lSA2', 'moregana'],
+        characters: ['mordred','merlin', 'lSA1', 'lSA2', 'lSA3','percival','assassin','mordred','lSA1', 'lSA2', 'morgana'],
         1:{
             voters: 3,
             status: '',
@@ -158,7 +158,7 @@ const gameState = {
         }
     },
     9:{
-        characters: ['assassin','lSA3', 'lSA4','percival','mordred', 'moregana','merlin', 'lSA1', 'lSA2'],
+        characters: ['assassin','lSA3', 'lSA4','percival','mordred', 'morgana','merlin', 'lSA1', 'lSA2'],
         1:{
             voters: 3,
             status: '',
@@ -186,7 +186,7 @@ const gameState = {
         }
     },
     10:{
-        characters: ['lSA1', 'oberon', 'lSA3', 'lSA4','assassin','mordred', 'percival', 'moregana','merlin'],
+        characters: ['lSA1', 'oberon', 'lSA3', 'lSA4','assassin','mordred', 'percival', 'morgana','merlin', 'lSA2'],
         1:{
             voters: 3,
             status: '',
