@@ -69,11 +69,7 @@ router.post('/create', async (req, res, next) => {
         })
         await State.update({status: "track"},{where:{roomName: req.body.roomName}})
 
-        socketStuff.emitMessage(req.body.roomName, assignment); 
-
       }
-
-      // client should join socket room
       res.status(200).send('Joined Room!')
     } catch (err) {
       console.log(err)
